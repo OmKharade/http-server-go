@@ -5,7 +5,7 @@ Build your own HTTP Server using Go.
 
 Set up a basic TCP server that listens on port 4221.
 
- It binds to the port and waits for a single incoming connection
+It binds to the port and waits for a single incoming connection
 ```go
 package main
 import (
@@ -27,5 +27,31 @@ func main() {
 }
 ```
 
+### 2. Respond with 200
 
-Made with the help of [CodeCrafters](https://app.codecrafters.io/courses/http-server/introduction).
+Accept concurrent connections
+```go
+for {
+	conn, err := l.Accept()
+	if err != nil {
+		fmt.Println("Error accepting connection:", err.Error())
+		continue
+	}
+	go handleConnection(conn)
+}
+```
+
+Write data (response) to connection
+```go
+func handleConnection(conn net.Conn) {
+    fmt.Println("New connection accepted")
+    response := "HTTP/1.1 200 OK\r\n\r\n"
+    fmt.Println("Attempting to send response:", response)
+    _, err := conn.Write([]byte(response))
+    if err != nil {
+        fmt.Println("Error writing to connection:", err.Error())
+    } else {
+        fmt.Println("Response sent successfully")
+    }
+}
+```
