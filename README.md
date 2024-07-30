@@ -29,29 +29,39 @@ func main() {
 
 ### 2. Respond with 200
 
-Accept concurrent connections
-```go
-for {
-	conn, err := l.Accept()
-	if err != nil {
-		fmt.Println("Error accepting connection:", err.Error())
-		continue
-	}
-	go handleConnection(conn)
-}
+Send an HTTP `GET` request to your server:
+
+```bash
+$ curl -v http://localhost:4221
 ```
 
-Write data (response) to connection
-```go
-func handleConnection(conn net.Conn) {
-    fmt.Println("New connection accepted")
-    response := "HTTP/1.1 200 OK\r\n\r\n"
-    fmt.Println("Attempting to send response:", response)
-    _, err := conn.Write([]byte(response))
-    if err != nil {
-        fmt.Println("Error writing to connection:", err.Error())
-    } else {
-        fmt.Println("Response sent successfully")
-    }
-}
+Server responds to the request with the following response:
+
+```javascript
+HTTP/1.1 200 OK\r\n\r\n
 ```
+
+### 3. Extract URL Path
+
+Send a `GET` request, with a random string as the path:
+
+```bash
+$ curl -v http://localhost:4221/abcdefg
+```
+
+Server responds to this request with a `404` response:
+
+```javascript
+HTTP/1.1 404 Not Found\r\n\r\n
+```
+
+Send a `GET` request, with the path `/`:
+
+```bash
+$ curl -v http://localhost:4221
+```
+
+Server responds to this request with a `200` response:
+
+```javascript
+HTTP/1.1 200 OK\r\n\r\n
