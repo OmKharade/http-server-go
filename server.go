@@ -25,12 +25,14 @@ func main() {
 
 func handleConnection(conn net.Conn) {
 	fmt.Println("New connection accepted")
+
 	buffer := make([]byte, 1024)
 	n, err := conn.Read(buffer)
 	if err != nil {
 		fmt.Println("Error reading from connection:", err.Error())
 		return
 	}
+
 	request := string(buffer[:n])
 	requestLine := strings.Split(request, "\n")[0]
 	parts := strings.Split(strings.TrimSpace(requestLine), " ")
@@ -38,14 +40,21 @@ func handleConnection(conn net.Conn) {
 		fmt.Println("Invalid HTTP request")
 		return
 	}
+
 	path := parts[1]
 	fmt.Println("Requested path:", path)
+
 	var response string
 	if path == "/" {
 		response = "HTTP/1.1 200 OK\r\n\r\n"
+	} else if strings.HasPrefix(path, "/echo/") {
+		echoStr := strings.TrimPrefix(path, "/echo/")
+		contentLength := len(echoStr)
+		response = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Type:text/plain\r\nContent-Length: %d\r\n\r\n%s", contentLength, echoStr)
 	} else {
 		response = "HTTP/1.1 404 Not Found\r\n\r\n"
 	}
+
 	fmt.Println("Sending response:", response)
 	_, err = conn.Write([]byte(response))
 	if err != nil {

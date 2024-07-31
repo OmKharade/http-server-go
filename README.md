@@ -65,3 +65,22 @@ Server responds to this request with a `200` response:
 
 ```javascript
 HTTP/1.1 200 OK\r\n\r\n
+```
+
+### 4. Respond with body
+
+Send a `GET` request to the `/echo/{str}` endpoint on the server, with some random string.
+
+```bash
+$ curl -v http://localhost:4221/echo/abc
+```
+
+Server responds with a `200` response that contains the following parts:
+
+- `Content-Type` header set to `text/plain`.
+- `Content-Length` header set to the length of the given string.
+- Response body set to the given string.
+
+```javascript
+HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 3\r\n\r\nabc
+```
