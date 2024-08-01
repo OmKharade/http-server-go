@@ -84,3 +84,20 @@ Server responds with a `200` response that contains the following parts:
 ```javascript
 HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 3\r\n\r\nabc
 ```
+### 5. Read header
+
+Send a `GET` request to the `/user-agent` endpoint on the server. The request will have a `User-Agent` header.
+
+```bash
+$ curl -v --header "User-Agent: foobar/1.2.3" http://localhost:4221/user-agent
+```
+
+Server responds with a `200` response that contains the following parts:
+
+- `Content-Type` header set to `text/plain`.
+- `Content-Length` header set to the length of the `User-Agent` value.
+- Message body set to the `User-Agent` value.
+
+```javascript
+HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 12\r\n\r\nfoobar/1.2.3
+```
