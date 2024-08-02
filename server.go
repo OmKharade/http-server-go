@@ -68,6 +68,15 @@ func handleConnection(conn net.Conn) {
 	} else if path == "/user-agent" {
 		contentLength := len(userAgent)
 		response = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", contentLength, userAgent)
+	} else if strings.HasPrefix(path, "/files/") {
+		filename := strings.TrimPrefix(path, "/files/")
+		dirname := os.Args[2]
+		data, err := os.ReadFile(dirname + filename)
+		if err != nil {
+			response = "HTTP/1.1 404 Not Found\r\n\r\n"
+		} else {
+			response = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: %d\r\n\r\n%s", len(data), data)
+		}
 	} else {
 		response = "HTTP/1.1 404 Not Found\r\n\r\n"
 	}

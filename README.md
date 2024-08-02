@@ -101,3 +101,46 @@ Server responds with a `200` response that contains the following parts:
 ```javascript
 HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 12\r\n\r\nfoobar/1.2.3
 ```
+
+### 6. Return a file
+
+Execute the program with a `--directory` flag. The `--directory` flag specifies the directory where the files are stored, as an absolute path.
+
+```shell
+$ ./your_program.sh --directory /tmp/
+```
+
+Send two `GET` requests to the `/files/{filename}` endpoint on your server.
+
+#### First request
+
+Ask for a file that exists in the files directory:
+
+```shell
+$ echo -n 'Hello, World!' > /tmp/foo
+$ curl -i http://localhost:4221/files/foo
+```
+
+Server responds with a `200` response that contains the following parts:
+
+- `Content-Type` header set to `application/octet-stream`.
+- `Content-Length` header set to the size of the file, in bytes.
+- Response body set to the file contents.
+
+```js
+HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: 14\r\n\r\nHello, World!
+```
+
+#### Second request
+
+Ask for a file that doesn't exist in the files directory:
+
+```shell
+$ curl -i http://localhost:4221/files/non_existant_file
+```
+
+Server responds with a `404` response:
+
+```js
+HTTP/1.1 404 Not Found\r\n\r\n
+```
