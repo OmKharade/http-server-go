@@ -144,3 +144,32 @@ Server responds with a `404` response:
 ```js
 HTTP/1.1 404 Not Found\r\n\r\n
 ```
+
+### 7. Read request body
+
+Execute your program with a `--directory` flag. The `--directory` flag specifies the directory to create the file in, as an absolute path.
+
+```shell
+$ ./your_program.sh --directory /tmp/
+```
+
+Send a `POST` request to the `/files/{filename}` endpoint on the server, with the following parts:
+
+- `Content-Type` header set to `application/octet-stream`.
+- `Content-Length` header set to the size of the request body, in bytes.
+- Request body set to some random text.
+
+```shell
+$ curl -v --data "12345" -H "Content-Type: application/octet-stream" http://localhost:4221/files/file_123
+```
+
+Server returns a `201` response:
+
+```js
+HTTP/1.1 201 Created\r\n\r\n
+```
+
+Server also creates a new file in the files directory, with the following requirements:
+
+- The filename must equal the `filename` parameter in the endpoint.
+- The file must contain the contents of the request body.
